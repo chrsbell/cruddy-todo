@@ -20,10 +20,18 @@ exports.create = (text, callback) => {
 };
 
 exports.readAll = (callback) => {
-  var data = _.map(items, (text, id) => {
-    return { id, text };
+  // build a list of the files in the dataDir
+  fs.readdir(exports.dataDir, (err, files) => {
+    // console.log(files);
+    var data = _.map(files, (filename, index) => {
+      // strip the extension
+      filename = filename.slice(0, -4);
+      // use message's id for both text/id
+      return { id: filename, text: filename };
+    });
+    // console.log(data);
+    callback(null, data);
   });
-  callback(null, data);
 };
 
 exports.readOne = (id, callback) => {
