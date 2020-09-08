@@ -22,25 +22,28 @@ exports.create = (text, callback) => {
 exports.readAll = (callback) => {
   // build a list of the files in the dataDir
   fs.readdir(exports.dataDir, (err, files) => {
-    // console.log(files);
     var data = _.map(files, (filename, index) => {
       // strip the extension
       filename = filename.slice(0, -4);
       // use message's id for both text/id
       return { id: filename, text: filename };
     });
-    // console.log(data);
     callback(null, data);
   });
 };
 
 exports.readOne = (id, callback) => {
-  var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
-  }
+  const filename = path.join(exports.dataDir, id + '.txt');
+  fs.readFile(filename, (err, fileData) => {
+    if (err) {
+      // This probably shouldn't happen
+      callback(new Error(`Couldn't read file ${filename}`));
+    } else {
+      const todo = {id: id, text: fileData.toString()};
+      // console.log(`Read todo: ${JSON.stringify(todo)}`);
+      callback(null, todo);
+    }
+  });
 };
 
 exports.update = (id, text, callback) => {
