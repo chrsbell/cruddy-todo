@@ -74,14 +74,22 @@ exports.update = (id, text, callback) => {
 };
 
 exports.delete = (id, callback) => {
-  var item = items[id];
-  delete items[id];
-  if (!item) {
-    // report an error if item not found
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback();
-  }
+  const filename = path.join(exports.dataDir, id + '.txt');
+  exports.readOne(id, (err, todo) => {
+    if (err) {
+      callback(new Error(`Couldn't delete file ${filename} because it doesn't exist.`));
+    } else {
+      // file exists, so delete it
+      fs.unlink(filename, (err) => {
+        if (err) {
+          // this probably shouldn't happen
+          callback(new Error(`Could not delete ${filename} for unknown reason.`));
+        } else {
+          callback(null);
+        }
+      });
+    }
+  });
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
