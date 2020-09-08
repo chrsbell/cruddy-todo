@@ -51,7 +51,7 @@ exports.getNextUniqueId = (callback) => {
     });
   };
 
-  readCounter((next, fileCounter) => {
+  readCounter((empty, fileCounter) => {
     if (Number.isNaN(fileCounter)) {
       // initialize counter
       counter = 0;
@@ -59,7 +59,7 @@ exports.getNextUniqueId = (callback) => {
       // read counter
       counter = fileCounter;
     }
-    console.log('Counter: ' + fileCounter);
+    // console.log('Counter: ' + fileCounter);
     counter++;
     next();
   });
