@@ -42,9 +42,8 @@ exports.getNextUniqueId = (callback) => {
 
   let next = () => {
     // write the counter and invoke callback
-    writeCounter(counter, (next, counterString) => {
+    writeCounter(counter, (err, counterString) => {
       const id = zeroPaddedNumber(counterString);
-      const err = null;
       if (callback) {
         callback(err, id);
       }
@@ -59,7 +58,6 @@ exports.getNextUniqueId = (callback) => {
       // read counter
       counter = fileCounter;
     }
-    // console.log('Counter: ' + fileCounter);
     counter++;
     next();
   });
