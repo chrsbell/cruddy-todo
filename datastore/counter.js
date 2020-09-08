@@ -39,11 +39,30 @@ const writeCounter = (count, callback) => {
 // Public API - Fix this function //////////////////////////////////////////////
 
 exports.getNextUniqueId = (callback) => {
-  const err = null;
-  // get next id
-  const id = zeroPaddedNumber(counter);
-  counter = counter + 1;
-  callback(err, id);
+
+  let next = () => {
+    // write the counter and invoke callback
+    writeCounter(counter, (next, counterString) => {
+      const id = zeroPaddedNumber(counterString);
+      const err = null;
+      if (callback) {
+        callback(err, id);
+      }
+    });
+  };
+
+  readCounter((next, fileCounter) => {
+    if (Number.isNaN(fileCounter)) {
+      // initialize counter
+      counter = 0;
+    } else {
+      // read counter
+      counter = fileCounter;
+    }
+    console.log('Counter: ' + fileCounter);
+    counter++;
+    next();
+  });
 };
 
 
